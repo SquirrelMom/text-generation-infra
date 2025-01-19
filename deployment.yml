@@ -14,6 +14,9 @@ spec:
     spec:
       containers:
         - name: text-generation-container
-          image: wiktoria02/text-generation:latest
+          image: wiktoria02/text-generation-cuda:latest
           ports:
             - containerPort: 7860
+          # resources:
+          #   limits:
+          #     nvidia.com/gpu: 1
