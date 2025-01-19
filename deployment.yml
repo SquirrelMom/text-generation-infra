@@ -17,6 +17,6 @@ spec:
           image: wiktoria02/text-generation-cuda:latest
           ports:
             - containerPort: 7860
-          # resources:
-          #   limits:
-          #     nvidia.com/gpu: 1
+          env:
+            - name: LD_LIBRARY_PATH
+              value: "/usr/local/cuda-12.6/compat"
