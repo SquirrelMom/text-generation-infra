@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/SquirrelMom/text-generation-infra.git
     targetRevison: HEAD
-    #path: currently no path
+    path: manifests
   destination:
     server: https://kubernetes.default.svc
     namespace: default
