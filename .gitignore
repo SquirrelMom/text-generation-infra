@@ -1,3 +1,4 @@
 pod1.yaml
 persistent-volume-claim.yml
 deploy.sh
+argo-cd-yml-draft.txt
