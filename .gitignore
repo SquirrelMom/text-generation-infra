@@ -1,3 +1,2 @@
-pod1.yaml
-persistent-volume-claim.yml
-deploy.sh
+manifests/persistent-volume-claim.yml
+drafts
