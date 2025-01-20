@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: text-generation-deployment
+spec:
+  selector:
+    matchLabels:
+      app: text-generation
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: text-generation
+    spec:
+      containers:
+        - name: text-generation-container
+          image: wiktoria02/text-generation-cuda:latest
+          ports:
+            - containerPort: 7860
+          env:
+            - name: LD_LIBRARY_PATH
+              value: "/usr/local/cuda-12.6/compat"
