@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: text-generation-dockerhub-sensor
+  namespace: argo
+spec:
+  dependencies:
+    - name: dockerhub
+      eventSourceName: text-generation-dockerhub-webhook
+      eventName: dockerhub
+  triggers:
+    - template:
+        name: trigger-rollout-workflow
+        argoWorkflow:
+          group: argoproj.io
+          version: v1alpha1
+          resource: Workflow
+          operation: submit
+          source:
+            workflowTemplateRef:
+              name: workflow-pull-image        #pipeline resposible for doing rollout
