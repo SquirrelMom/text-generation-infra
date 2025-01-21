@@ -16,6 +16,6 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true     #for creating a namespace of text-gen app manifests specified im destination->namespace if one doesn't exist
-    # automated:                  #commented temporarily 
-    #   selfHeal: true            #undo/overwrite manual changes to the cluster and sync with remote state
-    #   prune: true               #when compontent is renamed/deleted (ex svc.yml) the (old/)component is deleted in the cluster
+    automated:                  #commented temporarily 
+      selfHeal: true            #undo/overwrite manual changes to the cluster and sync with remote state
+      prune: true               #when compontent is renamed/deleted (ex svc.yml) the (old/)component is deleted in the cluster
