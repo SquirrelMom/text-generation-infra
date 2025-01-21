@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argo-role
+  namespace: default
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]            # access to deployment
+    verbs: ["get", "update", "patch"]     # rollout restart options
+  - apiGroups: [""]                       # additionally, if access needed to pods
+    resources: ["pods"]
+    verbs: ["list", "watch"]
