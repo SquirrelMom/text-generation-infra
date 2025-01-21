@@ -15,6 +15,7 @@ spec:
       containers:
         - name: text-generation-container
           image: wiktoria02/text-generation:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 7860
           env:
