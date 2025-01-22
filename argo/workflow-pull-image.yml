@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  name: workflow-pull-image       #does a kubectl rollout
+  generateName: workflow-pull-image-       #does a kubectl rollout, name is generated
   namespace: argo
 spec:
   entrypoint: rollout
