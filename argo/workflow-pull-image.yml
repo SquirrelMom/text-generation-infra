@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: workflow-pull-image       #does a kubectl rollout
+  namespace: argo
+spec:
+  entrypoint: rollout
+  templates:
+    - name: rollout
+      container:
+        image: bitnami/kubectl:latest
+        command:
+          - /bin/bash
+          - -c
+          - |
+            kubectl rollout restart deployment text-generation-deployment -n default

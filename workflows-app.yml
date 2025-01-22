@@ -1,0 +1,21 @@
+#application yml for ArgoCD
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-workflows-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/SquirrelMom/text-generation-infra.git
+    targetRevision: HEAD
+    path: argo
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true     #for creating a namespace of text-gen app manifests specified im destination->namespace if one doesn't exist
+    automated:                  #commented temporarily 
+      selfHeal: true            #undo/overwrite manual changes to the cluster and sync with remote state
+      prune: true               #when compontent is renamed/deleted (ex svc.yml) the (old/)component is deleted in the cluster
