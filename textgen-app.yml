@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: myapp-argo-app
+  name: argo-textgeneration-app
   namespace: argocd
 spec:
   project: default
