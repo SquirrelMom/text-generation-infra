@@ -5,7 +5,7 @@ Kubernetes Infrastructure for text-generation-webui with Argo tools
 - deployment and service tied to text-gen app
 
 ### Argo CD
-- application.yml - ArgoCD app for monitoring and synchronising manifests of text-generation app
+- textgen-app.yml - ArgoCD app for monitoring and synchronising manifests of text-generation app
 - workflows-app.yml - ArgoCD app for monitoring and synchronising manifests of Argo Workflows manifests
 
 ### Argo Workflows resource files:
