@@ -1,2 +1,4 @@
 manifests/persistent-volume-claim.yml
 drafts
+argocd.exe
+argo/event-bus.yml

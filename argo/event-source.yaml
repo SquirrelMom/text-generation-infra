@@ -1,9 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: EventSource
 metadata:
-  name: text-generation-dockerhub-webhook
+  name: webhook
   namespace: argo
 spec:
+  service:
+    ports:
+      - port: 12000
+        targetPort: 12000
   webhook:
     dockerhub:
       endpoint: /dockerhub

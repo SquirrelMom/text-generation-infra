@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argo-events-access-role
+  namespace: argo-events
+rules:
+  - apiGroups: [""] # Dla zasobów podstawowych, takich jak ConfigMap, Secrets, itp.
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["argoproj.io"] # Dla specyficznych zasobów Argo Events
+    resources: ["sensors", "eventsources"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""] # Opcjonalnie dla logów lub innych zasobów
+    resources: ["pods", "events"]
+    verbs: ["get", "list"]
