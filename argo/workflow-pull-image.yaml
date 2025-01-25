@@ -1,13 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
-kind: WorkflowTemplate
+kind: Workflow
 metadata:
   name: workflow-pull-image           # does a kubectl rollout
   namespace: argo
 spec:
   entrypoint: rollout
+  arguments:
+    parameters:
+      - name: repo_name
+      - name: tag
   ttlStrategy:
-    secondsAfterCompletion: 180       # workflow is deleted in 3 mins after completion
-    strategy: OnWorkflowCompletion    # pod is deleted right after execution of workflow
+    secondsAfterCompletion: 240       # workflow is deleted in 3 mins after completion
   templates:
     - name: rollout
       container:

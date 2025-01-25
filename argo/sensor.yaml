@@ -4,8 +4,16 @@ metadata:
   name: text-generation-dockerhub-sensor
   namespace: argo
 spec:
-  # template:
-  #   serviceAccountName: argo-events-sa      # service account created at installation of argo events
+  template:
+    serviceAccountName: argo     # service account created at installation of argo events
+    containers:
+      - name: sensor
+        args:
+          - --port=12000
+          - --log-level=debug
+        ports:
+          - containerPort: 12000
+  eventBusName: default
   dependencies:
     - name: dockerhub
       eventSourceName: webhook
@@ -19,8 +27,17 @@ spec:
           resource: Workflow
           operation: submit
           source:
-            workflowTemplateRef:
+            workflowRef:
               name: workflow-pull-image           #pipeline resposible for doing rollout
               namespace: argo
-      condition: true #payload.push_data.tag == 'latest'       #workflow starts if push event is detected /webhook
+          parameters:
+            - src:
+                dependencyName: dockerhub
+                dataKey: repository.repo_name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: dockerhub
+                dataKey: push_data.tag
+              dest: spec.arguments.parameters.1.value
+      condition: "{{ .inputs.dockerhub.push_data.tag == 'latest' }}"       #workflow starts if push event is detected /webhook
       #if payloads push_data and push_data.tag aren't null, the rollout will happen

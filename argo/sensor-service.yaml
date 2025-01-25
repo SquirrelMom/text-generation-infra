@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: text-generation-dockerhub-sensor
+  namespace: argo
+  labels:
+    sensor: text-generation-dockerhub-sensor
+spec:
+  ports:
+    - port: 12000
+      targetPort: 12000
+  selector:
+    sensor: text-generation-dockerhub-sensor
