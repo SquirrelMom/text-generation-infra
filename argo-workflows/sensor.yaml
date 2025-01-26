@@ -19,17 +19,22 @@ spec:
               apiVersion: argoproj.io/v1alpha1
               kind: Workflow
               metadata:
-                generateName: hello-world-
+                generateName: pull-docker-image-
                 labels:
                   workflows.argoproj.io/archive-strategy: "false"
                 annotations:
                   workflows.argoproj.io/description: |
-                    This is a simple hello world example.
+                    This pipeline does a deployment rollout to replace pods to ones with newer image.
               spec:
-                entrypoint: hello-world
+                entrypoint: rollout
+                # ttlStrategy:
+                #   secondsAfterCompletion: 240 
                 templates:
-                - name: hello-world
+                - name: rollout
                   container:
-                    image: busybox
-                    command: [echo]
-                    args: ["hello world"]
+                    image: bitnami/kubectl:latest
+                    command:
+                      - /bin/bash
+                    args:
+                      - -c
+                      - kubectl rollout restart deployment text-generation-deployment -n default
