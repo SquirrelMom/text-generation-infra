@@ -5,3 +5,4 @@ argo/event-bus.yml
 argo/argo-admin-binding.yml
 argo/sensor-service.yaml
 argo/role-argoserver-argoevents-binding.yml
+logs
