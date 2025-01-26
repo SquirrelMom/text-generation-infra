@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: webhook
+spec:
+  template:
+    serviceAccountName: operate-workflow-sa
+  dependencies:
+    - name: dependon-eventsource
+      eventSourceName: webhook
+      eventName: dockerhub
+  triggers:
+    - template:
+        name: webhook-workflow-trigger
+        k8s:
+          operation: create
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: pull-docker-image-
+                labels:
+                  workflows.argoproj.io/archive-strategy: "false"
+                annotations:
+                  workflows.argoproj.io/description: |
+                    This pipeline does a deployment rollout to replace pods to ones with newer image.
+              spec:
+                entrypoint: rollout
+                # ttlStrategy:
+                #   secondsAfterCompletion: 240 
+                templates:
+                - name: rollout
+                  container:
+                    image: bitnami/kubectl:latest
+                    command:
+                      - /bin/bash
+                    args:
+                      - -c
+                      - kubectl rollout restart deployment text-generation-deployment -n default
