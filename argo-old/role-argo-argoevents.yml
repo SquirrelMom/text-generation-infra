@@ -8,8 +8,8 @@ rules:
     resources: ["configmaps", "secrets"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["argoproj.io"] # Dla specyficznych zasobów Argo Events
-    resources: ["sensors", "eventsources"]
-    verbs: ["get", "list", "watch"]
+    resources: ["sensors", "eventsources", "workflows", "workflowtemplates", "cronworkflows", "clusterworkflowtemplates"]
+    verbs: ["*"]
   - apiGroups: [""] # Opcjonalnie dla logów lub innych zasobów
     resources: ["pods", "events"]
     verbs: ["get", "list"]

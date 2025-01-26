@@ -1,0 +1,28 @@
+# Role in argo namespace (native for ArgoWorkflows), that will enable running the triggered in argo-events namespace Workflow in namespace argo
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: operate-workflow-role
+  namespace: argo  # workflow created here
+rules:
+  - apiGroups:
+      - argoproj.io
+    verbs:
+      - "*"
+    resources:
+      - workflows  # enablr to work with Workflows
+---
+# RoleBinding in -n argo-events to bind the Role to ServiceAccount used by Sensor
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: operate-workflow-role-binding
+  namespace: argo-events  # ServiceAccount in -n argo-events
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: operate-workflow-role  # Role from -n argo
+subjects:
+  - kind: ServiceAccount
+    name: operate-workflow-sa  # SA in -n argo-events
+    namespace: argo-events  # SA in -n argo-events

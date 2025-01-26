@@ -5,10 +5,10 @@ metadata:
   namespace: argo
 spec:
   entrypoint: rollout
-  arguments:
-    parameters:
-      - name: repo_name
-      - name: tag
+  # arguments:
+  #   parameters:
+  #     - name: repo_name
+  #     - name: tag
   ttlStrategy:
     secondsAfterCompletion: 240       # workflow is deleted in 3 mins after completion
   templates:

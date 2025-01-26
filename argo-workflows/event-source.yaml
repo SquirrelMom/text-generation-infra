@@ -2,16 +2,13 @@ apiVersion: argoproj.io/v1alpha1
 kind: EventSource
 metadata:
   name: webhook
-  namespace: argo
 spec:
-  eventBusName: default
   service:
     ports:
       - port: 12000
         targetPort: 12000
   webhook:
     dockerhub:
+      port: "12000"
       endpoint: /dockerhub
       method: POST
-      port: "12000"
-      host: "0.0.0.0"
