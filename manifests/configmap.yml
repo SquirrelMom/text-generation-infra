@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: text-generation-configmap
+data:
+  llm: ""
+  rag: ""
