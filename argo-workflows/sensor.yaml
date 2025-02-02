@@ -27,14 +27,27 @@ spec:
                     This pipeline does a deployment rollout to replace pods to ones with newer image.
               spec:
                 entrypoint: rollout
-                # ttlStrategy:
-                #   secondsAfterCompletion: 240 
+                arguments:
+                  parameters:
+                  - name: image-tag
+                    value: "{{events.trigger.event.body.push_data.tag}}"
                 templates:
                 - name: rollout
+                  inputs:
+                    parameters:
+                      - name: image-tag
                   container:
                     image: bitnami/kubectl:latest
                     command:
                       - /bin/bash
                     args:
                       - -c
-                      - kubectl rollout restart deployment text-generation-deployment -n default
+                      - |
+                        TAG="{{inputs.parameters.image-tag}}"
+                        kubectl set image deployment/text-generation-deployment text-generation-container=wiktoria02/text-generation:$TAG
+                        kubectl rollout restart deployment text-generation-deployment -n default
+          parameters:
+            - src:
+                dependencyName: dependon-eventsource
+                # dataKey: body.push_data.tag
+              dest: spec.arguments.parameters.0.value  # map event data to workflow parameter
