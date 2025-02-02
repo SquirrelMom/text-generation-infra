@@ -3,4 +3,5 @@ kind: ConfigMap
 metadata:
   name: text-generation-configmap
 data:
-  image: wiktoria02/text-generation:latest
+  llm: ""
+  rag: ""
