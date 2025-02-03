@@ -3,5 +3,7 @@ kind: ConfigMap
 metadata:
   name: text-generation-configmap
 data:
+  image: wiktoria02/text-generation
+  default-tag: latest
   llm: ""
   rag: ""
