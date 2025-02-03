@@ -39,12 +39,12 @@ spec:
                       - name: image-tag
                   container:
                     image: bitnami/kubectl:latest
-                    # env:
-                    #   - name: IMAGE
-                    #     valueFrom:
-                    #       configMapKeyRef:
-                    #         name: text-generation-configmap
-                    #         key: image
+                    env:
+                      - name: IMAGE
+                        valueFrom:
+                          configMapKeyRef:
+                            name: text-generation-configmap
+                            key: image
                     command:
                       - /bin/bash
                     args:
@@ -52,7 +52,7 @@ spec:
                       - |
                         TAG="{{inputs.parameters.image-tag}}"
                         echo "This is variable from configmap: $IMAGE"
-                        kubectl set image deployment/text-generation-deployment text-generation-container=wiktoria02/text-generation:$TAG
+                        kubectl set image deployment/text-generation-deployment text-generation-container=$IMAGE:$TAG
                         kubectl rollout restart deployment text-generation-deployment -n default
           parameters:
             - src:
