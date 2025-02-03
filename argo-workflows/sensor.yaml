@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Sensor
 metadata:
   name: webhook
+  namespace: argo-events
 spec:
   template:
     serviceAccountName: operate-workflow-sa
@@ -38,16 +39,22 @@ spec:
                       - name: image-tag
                   container:
                     image: bitnami/kubectl:latest
+                    # env:
+                    #   - name: IMAGE
+                    #     valueFrom:
+                    #       configMapKeyRef:
+                    #         name: text-generation-configmap
+                    #         key: image
                     command:
                       - /bin/bash
                     args:
                       - -c
                       - |
                         TAG="{{inputs.parameters.image-tag}}"
+                        echo "This is variable from configmap: $IMAGE"
                         kubectl set image deployment/text-generation-deployment text-generation-container=wiktoria02/text-generation:$TAG
                         kubectl rollout restart deployment text-generation-deployment -n default
           parameters:
             - src:
                 dependencyName: dependon-eventsource
-                # dataKey: body.push_data.tag
               dest: spec.arguments.parameters.0.value  # map event data to workflow parameter

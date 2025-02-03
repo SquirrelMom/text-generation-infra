@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: text-generation-configmap
+  namespace: argo-events
 data:
   image: wiktoria02/text-generation
   default-tag: latest
