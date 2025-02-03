@@ -11,7 +11,7 @@ rules:
     resources: ["deployments"]
     verbs: ["get", "list", "update", "patch", "create"]
   - apiGroups: [""]
-    resources: ["configmaps"]  # <-- Dodane uprawnienia do ConfigMap
+    resources: ["configmaps"]
     verbs: ["get", "list"]
 
 ---
