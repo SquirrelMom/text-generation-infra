@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: deployment-update-workflow
+  namespace: argo-events
+spec:
+  entrypoint: rollout
+  arguments:
+    parameters:
+    - name: image-tag
+      # value: "{{events.trigger.event.body.push_data.tag}}"
+  templates:
+  - name: rollout
+    inputs:
+      parameters:
+        - name: image-tag
+    container:
+      image: bitnami/kubectl:latest
+      env:
+        - name: IMAGE
+          valueFrom:
+            configMapKeyRef:
+              name: text-generation-configmap
+              key: image
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          TAG="{{inputs.parameters.image-tag}}"
+          echo "This is variable from configmap: $IMAGE"
+          kubectl set image deployment/text-generation-deployment text-generation-container=$IMAGE:$TAG
+          kubectl rollout restart deployment text-generation-deployment -n default
