@@ -27,34 +27,33 @@ spec:
                   workflows.argoproj.io/description: |
                     This pipeline does a deployment rollout to replace pods to ones with newer image.
               spec:
-                entrypoint: rollout
+                workflowTemplateRef:
+                  name: deployment-update-workflow
+                  namespace: argo-events
                 arguments:
                   parameters:
                   - name: image-tag
                     value: "{{events.trigger.event.body.push_data.tag}}"
-                templates:
-                - name: rollout
-                  inputs:
-                    parameters:
-                      - name: image-tag
-                  container:
-                    image: bitnami/kubectl:latest
-                    env:
-                      - name: IMAGE
-                        valueFrom:
-                          configMapKeyRef:
-                            name: text-generation-configmap
-                            key: image
-                    command:
-                      - /bin/bash
-                    args:
-                      - -c
-                      - |
-                        TAG="{{inputs.parameters.image-tag}}"
-                        echo "This is variable from configmap: $IMAGE"
-                        kubectl set image deployment/text-generation-deployment text-generation-container=$IMAGE:$TAG
-                        kubectl rollout restart deployment text-generation-deployment -n default
           parameters:
             - src:
                 dependencyName: dependon-eventsource
               dest: spec.arguments.parameters.0.value  # map event data to workflow parameter
+    # - template:
+    #     name: downloading-llm
+    #     k8s:
+    #       operation: create
+    #       source:
+    #         resource:
+    #           apiVersion: argoproj.io/v1alpha1
+    #           kind: Workflow
+    #           metadata:
+    #             generateName: download-llm-from-hugging-face-
+    #             labels:
+    #               workflows.argoproj.io/archive-strategy: "false"
+    #             annotations:
+    #               workflows.argoproj.io/description: |
+    #                 This pipeline downloads llm form The Hugging Face repository.
+    #           spec:
+    #             workflowTemplateRef:
+    #               name: download-and-apply-llm
+    #               namespace: argo-events

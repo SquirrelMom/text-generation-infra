@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: download-and-apply-llm
+  namespace: argo-events
+spec:
+  entrypoint: download-llm
+  templates:
+  - name: download-llm
+    container:
+      image: bitnami/kubectl:latest
+      env:
+        - name: LLM_MODEL
+          valueFrom:
+            configMapKeyRef:
+              name: text-generation-configmap
+              key: llm
+        - name: HUGGING_FACE_REPO
+          valueFrom:
+            configMapKeyRef:
+              name: text-generation-configmap
+              key: llm-repo
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          POD_NAME=$(kubectl get pods -n default -l app=text-generation -o jsonpath='{.items[0].metadata.name}')
+          kubectl exec -n default $POD_NAME -- python3 -m pip install requests tqdm
+          kubectl exec -n default $POD_NAME -- python3 download-model.py $HUGGING_FACE_REPO --specific-file $LLM_MODEL 
