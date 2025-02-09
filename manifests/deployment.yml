@@ -24,6 +24,8 @@ spec:
           volumeMounts:
             - mountPath: "/home/app/text-generation-webui/models"
               name: textgen-storage
+            - mountPath: "/home/app/text-generation-webui/training/datasets"
+              name: textgen-storage
       volumes:
         - name: textgen-storage
           persistentVolumeClaim:
