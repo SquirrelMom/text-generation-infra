@@ -21,12 +21,12 @@ spec:
           env:
             - name: LD_LIBRARY_PATH
               value: "/usr/local/cuda-12.6/compat"
-          volumeMounts:
-            - mountPath: "/home/app/text-generation-webui/models"
-              name: textgen-storage
-            - mountPath: "/home/app/text-generation-webui/training/datasets"
-              name: textgen-storage
-      volumes:
-        - name: textgen-storage
-          persistentVolumeClaim:
-            claimName: text-generation-webui-pvc
+      #     volumeMounts:
+      #       - mountPath: "/home/app/text-generation-webui/models"
+      #         name: textgen-storage
+      #       - mountPath: "/home/app/text-generation-webui/training/datasets"
+      #         name: textgen-storage
+      # volumes:
+      #   - name: textgen-storage
+      #     persistentVolumeClaim:
+      #       claimName: text-generation-webui-pvc
