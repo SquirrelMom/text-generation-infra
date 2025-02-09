@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: text-generation-webui-pvc1
 spec:
-  storageClassName: manual
+  storageClassName: standard
   accessModes:
     - ReadWriteOnce
   resources:

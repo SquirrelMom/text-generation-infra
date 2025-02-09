@@ -5,11 +5,10 @@ metadata:
   labels:
     type: local
 spec:
-  storageClassName: manual
+  storageClassName: standard
   capacity:
     storage: 10Gi
   accessModes:
     - ReadWriteOnce
-  # persistentVolumeReclaimPolicy: Retain
   hostPath:
     path: "/mnt/data"
