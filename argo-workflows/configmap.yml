@@ -6,5 +6,5 @@ metadata:
 data:
   image: wiktoria02/text-generation
   default-tag: latest
-  llm: ""
-  rag: ""
+  dataset-repo: training-datasets-loras
+  dataset-repo-creator: SquirrelMom
