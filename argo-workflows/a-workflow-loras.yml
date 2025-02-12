@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: train-lora-
+  namespace: argo-events
+spec:
+  entrypoint: download-and-train
+  # arguments:
+  #   parameters:
+  #     - name: dataset-repo
+  templates:
+  - name: download-and-train
+    steps:
+      - - name: download-datasets
+          template: download-datasets
+      # - - name: train-loras
+      #     template: train-loras
+
+  - name: download-datasets
+    container:
+      image: bitnami/kubectl:latest
+      env:
+        - name: DATASET
+          valueFrom:
+            configMapKeyRef:
+              name: text-generation-configmap
+              key: dataset-repo
+        - name: DATASET-CR
+          valueFrom:
+            configMapKeyRef:
+              name: text-generation-configmap
+              key: dataset-repo-creator
+      command:
+        - /bin/bash
+      # https://github.com/$DATASET-CR/$DATASET.git
+      args:
+        - -c
+        - |
+          POD_NAME=$(kubectl get pods -n default -l app=text-generation -o jsonpath='{.items[0].metadata.name}')
+          kubectl exec -n default $POD_NAME -- sh -c "cd training/datasets && git clone https://github.com/SquirrelMom/training-datasets-loras.git"
+          kubectl exec -n default $POD_NAME -- sh -c "mv training/datasets/$DATASET/* training/datasets/"
+          kubectl exec -n default $POD_NAME -- sh -c "rm -rf training/datasets/$DATASET"

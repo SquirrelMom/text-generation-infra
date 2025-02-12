@@ -1,25 +1,76 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  name: download-and-apply-llm
+  generateName: download-and-apply-llm-
   namespace: argo-events
 spec:
-  entrypoint: download-llm
+  entrypoint: download-and-load
+  arguments:
+    parameters:
+      - name: LLM_MODEL
+        value: ""  # will be set at the time of running terminal command 
+      - name: HUGGING_FACE_REPO
+        value: ""  # will be set at the time of running terminal command 
   templates:
-  - name: download-llm
+  - name: download-and-load
+    inputs:
+      parameters:
+        - name: LLM_MODEL
+        - name: HUGGING_FACE_REPO
+    steps:
+      - - name: choose-options
+          template: choose-options
+      - - name: download-model
+          template: download-model
+          when: '{{steps.choose-options.outputs.parameters.download}} == YES'
+          arguments:
+              parameters:
+                - name: LLM_MODEL
+                  value: "{{inputs.parameters.LLM_MODEL}}"
+                - name: HUGGING_FACE_REPO
+                  value: "{{inputs.parameters.HUGGING_FACE_REPO}}"
+      - - name: load-model
+          template: load-model
+          when: '{{steps.choose-options.outputs.parameters.load}} == YES'
+          arguments:
+              parameters:
+                - name: LLM_MODEL
+                  value: "{{inputs.parameters.LLM_MODEL}}"
+
+  - name: choose-options
+    suspend: {}
+    inputs:
+      parameters:
+        - name: download
+          default: 'YES'
+          enum:
+            - 'YES'
+            - 'NO'
+          description: >-
+            Choose YES to continue workflow and download LLM
+        - name: load
+          default: 'YES'
+          enum: 
+            - "YES"
+            - "NO"
+          description: >-
+            Choose YES to continue workflow and load model 
+    outputs:
+      parameters:
+        - name: download
+          valueFrom:
+            supplied: {}
+        - name: load
+          valueFrom:
+            supplied: {}
+
+  - name: download-model
+    inputs:
+      parameters:
+        - name: LLM_MODEL
+        - name: HUGGING_FACE_REPO
     container:
       image: bitnami/kubectl:latest
-      env:
-        - name: LLM_MODEL
-          valueFrom:
-            configMapKeyRef:
-              name: text-generation-configmap
-              key: llm
-        - name: HUGGING_FACE_REPO
-          valueFrom:
-            configMapKeyRef:
-              name: text-generation-configmap
-              key: llm-repo
       command:
         - /bin/bash
       args:
@@ -27,4 +78,25 @@ spec:
         - |
           POD_NAME=$(kubectl get pods -n default -l app=text-generation -o jsonpath='{.items[0].metadata.name}')
           kubectl exec -n default $POD_NAME -- python3 -m pip install requests tqdm
-          kubectl exec -n default $POD_NAME -- python3 download-model.py $HUGGING_FACE_REPO --specific-file $LLM_MODEL 
+          kubectl exec -n default $POD_NAME -- python3 download-model.py {{inputs.parameters.HUGGING_FACE_REPO}} --specific-file {{inputs.parameters.LLM_MODEL}} 
+
+  - name: load-model
+    inputs:
+      parameters:
+        - name: LLM_MODEL
+    container:
+      image: bitnami/kubectl:latest
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+            POD_NAME=$(kubectl get pods -n default -l app=text-generation -o jsonpath='{.items[0].metadata.name}')
+            kubectl exec -n default $POD_NAME -- curl -k http://127.0.0.1:5000/v1/internal/model/load -H "Content-Type: application/json" \
+            -d '{
+                  "model_name": "model_name",
+                  "args": {
+                    "load_in_4bit": true,
+                    "n_gpu_layers": 12
+                  }
+                }'
