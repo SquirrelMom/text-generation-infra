@@ -94,9 +94,10 @@ spec:
             POD_NAME=$(kubectl get pods -n default -l app=text-generation -o jsonpath='{.items[0].metadata.name}')
             kubectl exec -n default $POD_NAME -- curl -k http://127.0.0.1:5000/v1/internal/model/load -H "Content-Type: application/json" \
             -d '{
-                  "model_name": "model_name",
+                  "model_name": "{{inputs.parameters.LLM_MODEL}}",
                   "args": {
                     "load_in_4bit": true,
-                    "n_gpu_layers": 12
+                    "n_gpu_layers": 12,
+                    "n_ctx" : 4096
                   }
                 }'
