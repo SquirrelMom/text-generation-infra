@@ -27,9 +27,6 @@ spec:
               name: textgen-storage-1
             - mountPath: "/home/app/text-generation-webui/training/datasets"
               name: textgen-storage-2
-            - mountPath: "/home/app/text-generation-webui/CMD_FLAGS.txt"
-              name: textgen-storage-3
-              subPath: CMD_FLAGS.txt
       volumes:
         - name: textgen-storage-1
           persistentVolumeClaim:
@@ -37,6 +34,3 @@ spec:
         - name: textgen-storage-2
           persistentVolumeClaim:
             claimName: text-generation-webui-pvc2
-        - name: textgen-storage-3
-          persistentVolumeClaim:
-            claimName: text-generation-webui-pvc3
